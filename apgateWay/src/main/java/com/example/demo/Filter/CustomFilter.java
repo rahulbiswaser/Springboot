@@ -18,6 +18,7 @@ public class CustomFilter extends ZuulFilter{
 		RequestContext rt = RequestContext.getCurrentContext();
 		HttpServletRequest request= rt.getRequest();
 		log.info(request.getMethod() + "Inside CustomFIlter");
+		System.out.println("OK");
 		return null;
 	}
 
