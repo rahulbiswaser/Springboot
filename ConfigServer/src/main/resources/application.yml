@@ -1,0 +1,20 @@
+server:
+  port: 8888
+management:
+  security:
+    enabled: false
+spring:
+  cloud:
+    config:
+      server:
+        git:
+          uri: https://github.com/rahulbiswaser/localconfiguration
+          username: rahulbiswaser
+          password: Informa8@Tion
+          searchPaths: 
+          - configserver
+  application:
+    name: configserver
+ 
+          
+          
