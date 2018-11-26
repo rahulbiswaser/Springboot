@@ -13,6 +13,7 @@ spring:
           password: Informa8@Tion
           searchPaths: 
           - configserver
+          - eureka
   application:
     name: configserver
  
