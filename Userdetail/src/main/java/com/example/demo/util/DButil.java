@@ -1,14 +1,22 @@
 package com.example.demo.util;
 
+
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
+
 import org.springframework.stereotype.Component;
 
+import com.example.demo.model.Response.UserRecord;
+import com.example.demo.model.Response.UserRecord.record;
 import com.mongodb.BasicDBObject;
 import com.mongodb.DB;
 import com.mongodb.DBCollection;
 import com.mongodb.DBCursor;
 import com.mongodb.DBObject;
 import com.mongodb.MongoClient;
+import com.mongodb.WriteResult;
+
 
 
 @Component
@@ -25,29 +33,40 @@ public class DButil {
 	public String insertUser(String tablename,HashMap user){
 		String flag="false";
 		DB db1 = mongodbconnection();		
-		DBCollection dbc= db1.getCollection(tablename);
-		DBCursor result;
-		if(null != dbc.insert(new BasicDBObject(user))){
-			result=dbc.find();
-			flag = "Data Inserted Successfully";
-			System.out.println("result:" + result);				
+		DBCollection dbc= db1.getCollection(tablename);		
+		WriteResult wr=dbc.insert(new BasicDBObject(user));
+		if(wr.wasAcknowledged()){			
+			flag = "true";						
 		}
-		return flag;
+		return flag;		
+	}
+	
+	public UserRecord fetchRecord(String tablename){	
+		UserRecord resp= new UserRecord();
+		DB db1 = mongodbconnection();		
+		DBCollection dbc= db1.getCollection(tablename);
+		DBCursor dbo= dbc.find();
+		ArrayList newList= new ArrayList();
+		while(dbo.hasNext()){
+			record rc= new record();
+			DBObject obj=dbo.next();
+			rc.setCustomerId((String)obj.get("customerId"));
+			rc.setPassword((String)obj.get("customerId"));
+			rc.setEmail((String)obj.get("email"));
+			rc.setUniqueId((String)obj.get("ID"));
+			rc.setEnrolldate((String)obj.get("Enrolled DateTime"));			
+			newList.add(rc);			
+		}	
+		 resp.setUserrecorddetails(newList);
+		 return resp;
+	}
+	
+	public void updateRecord(String tablename){
 		
 	}
 	
-	/*public String fetchRecord(String tablename,HashMap user){
-		String flag="false";
-		DB db1 = mongodbconnection();		
-		DBCollection dbc= db1.getCollection(tablename);
-		DBCursor result;
-		if(null != dbc.insert(new BasicDBObject(user))){
-			result=dbc.find();
-			flag = "Data Inserted Successfully";
-			System.out.println("result:" + result);				
-		}
-		return flag;
+    public void deleteRecord(String tablename){
 		
-	}*/
+	}
 
 }

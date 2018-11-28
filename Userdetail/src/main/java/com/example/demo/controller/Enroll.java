@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.example.demo.model.Request.EnrollParam;
 import com.example.demo.model.Response.EnrollResponse;
+import com.example.demo.model.Response.UserRecord;
 import com.example.demo.service.UserdetailService;
 
 @RestController
@@ -22,6 +23,11 @@ public class Enroll {
 	public EnrollResponse enrollUser(@Valid @RequestBody EnrollParam enrollparam) throws Exception{
 		EnrollResponse enrollresp=userservice.enroll(enrollparam);		
 		return enrollresp;		
+	}
+	
+	@RequestMapping(value="/v1/enroll", method=RequestMethod.GET)
+	public UserRecord enrolledUser() throws Exception{				
+		return userservice.enrolledUser();	
 	}
 
 }
