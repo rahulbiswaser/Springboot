@@ -8,7 +8,9 @@ import java.util.Date;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import com.example.demo.model.Request.EnrollParam;
+import com.example.demo.model.Request.LoginParam;
 import com.example.demo.model.Response.EnrollResponse;
+import com.example.demo.model.Response.LoginResponse;
 import com.example.demo.model.Response.UserRecord;
 import com.example.demo.util.CryptoUtil;
 import com.example.demo.util.DButil;
@@ -26,7 +28,7 @@ public class UserdetailService {
 		DateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
 		Date date = new Date();
 		System.out.println(dateFormat.format(date));
-		HashMap map= new HashMap();
+		HashMap<String, String> map= new HashMap<String, String>();
 		map.put("customerId", enrollparam.getCustomerId());
 		map.put("password", encryptedpassword);
 		map.put("email", enrollparam.getEmail());
@@ -37,8 +39,21 @@ public class UserdetailService {
 	}
 	
 	public UserRecord enrolledUser() throws Exception{			
-		return dbutil.fetchRecord("usercred");	
-		
+		return dbutil.fetchRecord("usercred");			
+	}
+	
+	public LoginResponse login(LoginParam loginparam) throws Exception{
+		DateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
+		Date date = new Date();
+		LoginResponse resp = new LoginResponse();
+		String decryptedpassword =cryptoutil.decrypt((String)dbutil.fetchbyQuery("usercred", loginparam).get("password"));
+		if(loginparam.getCustomerId().equalsIgnoreCase((String)dbutil.fetchbyQuery("usercred", loginparam).get("customerId"))
+				&& loginparam.getPassword().equalsIgnoreCase(decryptedpassword)){
+			
+			resp.setResult("Login succss at" + dateFormat.format(date));
+			resp.setSessionId(Math.random());// will implement jhcache or Gemfire
+		}
+		return resp;
 	}
 
 }

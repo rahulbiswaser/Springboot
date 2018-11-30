@@ -7,6 +7,7 @@ import java.util.List;
 
 import org.springframework.stereotype.Component;
 
+import com.example.demo.model.Request.LoginParam;
 import com.example.demo.model.Response.UserRecord;
 import com.example.demo.model.Response.UserRecord.record;
 import com.mongodb.BasicDBObject;
@@ -46,12 +47,12 @@ public class DButil {
 		DB db1 = mongodbconnection();		
 		DBCollection dbc= db1.getCollection(tablename);
 		DBCursor dbo= dbc.find();
-		ArrayList newList= new ArrayList();
+		ArrayList<Object> newList= new ArrayList<Object>();
 		while(dbo.hasNext()){
 			record rc= new record();
 			DBObject obj=dbo.next();
 			rc.setCustomerId((String)obj.get("customerId"));
-			rc.setPassword((String)obj.get("customerId"));
+			rc.setPassword((String)obj.get("password"));
 			rc.setEmail((String)obj.get("email"));
 			rc.setUniqueId((String)obj.get("ID"));
 			rc.setEnrolldate((String)obj.get("Enrolled DateTime"));			
@@ -60,6 +61,26 @@ public class DButil {
 		 resp.setUserrecorddetails(newList);
 		 return resp;
 	}
+	
+	public HashMap fetchbyQuery(String tablename,LoginParam loginparam){	
+		HashMap<String,String> entry= new HashMap<String,String>();
+		DB db1 = mongodbconnection();		
+		DBCollection dbc= db1.getCollection(tablename);
+		BasicDBObject Query= new BasicDBObject();
+		Query.put("customerId", loginparam.getCustomerId());		
+		DBCursor dbo= dbc.find(Query);
+		ArrayList<Object> newList= new ArrayList<Object>();
+		while(dbo.hasNext()){			
+			DBObject obj=dbo.next();
+			entry.put("customerId",(String)obj.get("customerId"));
+			entry.put("password",(String)obj.get("password"));
+			entry.put("email",(String)obj.get("email"));
+			entry.put("ID",(String)obj.get("ID"));
+			entry.put("Enrolled DateTime",(String)obj.get("Enrolled DateTime"));						
+		}	
+		  return entry;
+	}
+	
 	
 	public void updateRecord(String tablename){
 		
