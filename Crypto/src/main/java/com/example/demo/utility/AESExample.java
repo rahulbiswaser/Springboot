@@ -6,7 +6,10 @@ import java.io.FileInputStream;
 import java.io.InputStream;
 import java.security.Key;
 import java.security.KeyStore;
+import java.security.PrivateKey;
+import java.security.PublicKey;
 import java.util.Base64;
+import java.util.HashMap;
 
 import javax.crypto.Cipher;
 
@@ -18,7 +21,9 @@ import org.springframework.stereotype.Component;
 @Component
 public class AESExample {
 	private static final String algo="AES";
+	private static final String algoAsym="RSA";
 	private Key key;
+	private byte[] encryptedbyte;
 	
 	public Key getkey(){
 		try{
@@ -49,5 +54,21 @@ public class AESExample {
 		byte[] withouttbase64= Base64.getDecoder().decode(encryptedString);
 		byte[] decryptedString= c.doFinal(withouttbase64);
 		return new String (decryptedString);
+	}
+	
+	public Object encryptSecretKey(HashMap<String,Object> data) throws Exception{		
+		Cipher c=Cipher.getInstance(algoAsym);
+		c.init(Cipher.ENCRYPT_MODE, (PrivateKey)data.get("privatekey"));
+		encryptedbyte= c.doFinal(key.getEncoded());
+		return Base64.getEncoder().encodeToString(encryptedbyte);		
+		
+	}
+	
+	public Object decryptSecretKey(HashMap<String,Object> data) throws Exception{		
+		Cipher c=Cipher.getInstance(algoAsym);
+		c.init(Cipher.DECRYPT_MODE, (PublicKey)data.get("publickey"));
+		byte[] decryptedbyte= c.doFinal(encryptedbyte);
+		return new String(decryptedbyte);		
+		
 	}
 }
