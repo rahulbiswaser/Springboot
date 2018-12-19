@@ -9,9 +9,10 @@ import java.security.KeyStore;
 import java.security.PrivateKey;
 import java.security.PublicKey;
 import java.util.Base64;
-import java.util.HashMap;
 
 import javax.crypto.Cipher;
+import javax.crypto.SecretKey;
+import javax.crypto.spec.SecretKeySpec;
 
 import org.springframework.stereotype.Component;
 
@@ -56,19 +57,30 @@ public class AESExample {
 		return new String (decryptedString);
 	}
 	
-	public Object encryptSecretKey(HashMap<String,Object> data) throws Exception{		
+	public String decrypt(String encryptedString, String secretkey)throws Exception{
+		byte[] decodekey = Base64.getDecoder().decode(secretkey);
+		SecretKey originalKey= new SecretKeySpec(decodekey,0,decodekey.length,"AES");
+		Cipher c= Cipher.getInstance(algo);
+		c.init(Cipher.DECRYPT_MODE, originalKey);
+		byte[] withouttbase64= Base64.getDecoder().decode(encryptedString);
+		byte[] decryptedString= c.doFinal(withouttbase64);
+		return new String (decryptedString);
+	}
+	
+	public Object encryptSecretKey(Object data) throws Exception{		
 		Cipher c=Cipher.getInstance(algoAsym);
-		c.init(Cipher.ENCRYPT_MODE, (PrivateKey)data.get("privatekey"));
-		encryptedbyte= c.doFinal(key.getEncoded());
+		c.init(Cipher.ENCRYPT_MODE, (PrivateKey)data);
+		encryptedbyte= c.doFinal(getkey().getEncoded());
 		return Base64.getEncoder().encodeToString(encryptedbyte);		
 		
 	}
 	
-	public Object decryptSecretKey(HashMap<String,Object> data) throws Exception{		
+	public Object decryptSecretKey(Object publickey,String encryptedSecret) throws Exception{		
 		Cipher c=Cipher.getInstance(algoAsym);
-		c.init(Cipher.DECRYPT_MODE, (PublicKey)data.get("publickey"));
-		byte[] decryptedbyte= c.doFinal(encryptedbyte);
-		return new String(decryptedbyte);		
+		c.init(Cipher.DECRYPT_MODE, (PublicKey)publickey);
+		byte[] withouttbase64= Base64.getDecoder().decode(encryptedSecret);
+		byte[] decryptedbyte= c.doFinal(withouttbase64);
+		return Base64.getEncoder().encodeToString(decryptedbyte);	
 		
 	}
 }
