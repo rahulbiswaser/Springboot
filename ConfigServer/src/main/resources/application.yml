@@ -23,6 +23,7 @@ spring:
           - configserver
           - eureka
           - gatewayApp
+          - crypto
   application:
     name: configserver
  

@@ -14,7 +14,10 @@ import javax.crypto.Cipher;
 import javax.crypto.SecretKey;
 import javax.crypto.spec.SecretKeySpec;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+
+import com.example.demo.CryptoConfig;
 
 /*
  * Symmetric Key Operation Example 
@@ -26,14 +29,17 @@ public class AESExample {
 	private Key key;
 	private byte[] encryptedbyte;
 	
+	@Autowired
+	CryptoConfig crypconfig;
+	
 	public Key getkey(){
 		try{
-		InputStream is= new FileInputStream("C:/Users/Friends/keys/appkey");
+		InputStream is= new FileInputStream(this.crypconfig.getSecretstorePath());
 		KeyStore keystore= KeyStore.getInstance("jceks");
 		System.out.println(keystore.getProvider());
-		keystore.load(is,"test123".toCharArray()); 
-		String alias ="appkey";
-		key= keystore.getKey(alias,"test123".toCharArray());
+		keystore.load(is,this.crypconfig.getSecretstorePass().toCharArray()); 
+		String alias =this.crypconfig.getAlias();
+		key= keystore.getKey(alias,this.crypconfig.getSecretstorePass().toCharArray());
 		System.out.println(key);
 		}catch(Exception e){
 			System.out.println(e);
@@ -59,7 +65,7 @@ public class AESExample {
 	
 	public String decrypt(String encryptedString, String secretkey)throws Exception{
 		byte[] decodekey = Base64.getDecoder().decode(secretkey);
-		SecretKey originalKey= new SecretKeySpec(decodekey,0,decodekey.length,"AES");
+		SecretKey originalKey= new SecretKeySpec(decodekey,0,decodekey.length,algo);
 		Cipher c= Cipher.getInstance(algo);
 		c.init(Cipher.DECRYPT_MODE, originalKey);
 		byte[] withouttbase64= Base64.getDecoder().decode(encryptedString);

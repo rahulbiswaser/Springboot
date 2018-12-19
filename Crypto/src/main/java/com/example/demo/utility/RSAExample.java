@@ -12,6 +12,7 @@ import java.util.HashMap;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import com.example.demo.CryptoConfig;
 import com.example.demo.model.DecryptRSARequest;
 
 /*
@@ -24,6 +25,9 @@ public class RSAExample {
 	@Autowired
 	AESExample aesexample;
 	
+	@Autowired
+	CryptoConfig crypconfig;
+	
 	private static final String algo="RSA";
 	private Key key;
 	private PrivateKey privatekey;
@@ -32,12 +36,12 @@ public class RSAExample {
 	public HashMap<String, Object> getkeypair(){
 		HashMap<String, Object> keypair= new HashMap<String,Object>();
 		try{
-		InputStream is= new FileInputStream("C:/Users/Friends/keys/apprsakey");
+		InputStream is= new FileInputStream(this.crypconfig.getRsastorePath());
 		KeyStore keystore= KeyStore.getInstance(KeyStore.getDefaultType());
 		System.out.println(keystore.getProvider());
-		keystore.load(is,"test123".toCharArray()); 
-		String alias ="apprsakey";
-		key= keystore.getKey(alias,"test123".toCharArray());
+		keystore.load(is,this.crypconfig.getRsastorePass().toCharArray()); 
+		String alias =this.crypconfig.getRsaalias();
+		key= keystore.getKey(alias,this.crypconfig.getRsastorePass().toCharArray());
 		 if (key instanceof PrivateKey) {
 	          // Get certificate of public key
 	          Certificate cert = keystore.getCertificate(alias);
