@@ -10,6 +10,8 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.example.demo.model.EncryptParam;
 import com.example.demo.model.EncryptResponse;
+import com.example.demo.model.Request;
+import com.example.demo.model.Response;
 import com.example.demo.utility.AESExample;
 
 
@@ -31,6 +33,13 @@ public class Keycontroller {
 		EncryptResponse encrypt= new EncryptResponse();
 		encrypt.setResult(aesexample.decrypt(param.getParam()));		
 		return encrypt;		
+	}
+	
+	@RequestMapping(value= "/v1/rest/template/dest", method= RequestMethod.POST)
+	public Response restexample(@RequestBody Request param) throws Exception{
+		Response response= new Response();
+		response.setResult("seccess");		
+		return response;		
 	}
 
 }
