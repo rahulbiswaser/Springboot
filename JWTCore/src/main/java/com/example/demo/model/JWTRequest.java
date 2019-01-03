@@ -4,6 +4,7 @@ public class JWTRequest {
 	
 	private String name;
 	private String id;
+	private String token;
 	public String getName() {
 		return name;
 	}
@@ -15,6 +16,12 @@ public class JWTRequest {
 	}
 	public void setId(String id) {
 		this.id = id;
+	}
+	public String getToken() {
+		return token;
+	}
+	public void setToken(String token) {
+		this.token = token;
 	}
 	
 	

@@ -19,5 +19,10 @@ public class JwtController {
 	public String generateToken(@RequestBody JWTRequest request){		
 		return jwtutil.getJwtToken(request);
 	}
+	
+	@RequestMapping(value="/v1/rest/validateJwtToken", method=RequestMethod.POST)
+	public boolean validateToken(@RequestBody JWTRequest request){		
+		return jwtutil.validateJwtToken(request);
+	}
 
 }

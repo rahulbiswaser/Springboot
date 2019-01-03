@@ -42,12 +42,23 @@ public class JwtUtil {
 		serializedJwt=signedjwt.serialize();
 		}catch(Exception e){
 			
-		}
-		
-				
+		}			
 		
 		return serializedJwt;
 	}
 	
+	public boolean validateJwtToken(JWTRequest request){
+		
+		SignedJWT signedJWT;
+		boolean result= false;
+		try{
+			signedJWT= SignedJWT.parse(request.getToken());
+			result= true;
+		}catch(Exception e){
+			
+		}
+		return result;
+		
+	}
 	
 }
